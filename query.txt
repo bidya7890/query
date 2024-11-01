@@ -1,0 +1,70 @@
+Q-1. get all employees under each manager 
+
+SELECT 
+    m.emp_id AS manager_id,
+    CONCAT(m.first_name, ' ', m.last_name) AS manager_name,
+    e.emp_id AS employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name
+FROM 
+    employee e
+JOIN 
+    employee m ON e.mgr_id = m.emp_id
+ORDER BY 
+    manager_id;
+
+Q=2.  how many employees are there in under manager alice or any name
+
+SELECT COUNT(*) AS employee_count
+FROM employee e
+JOIN employee m ON e.mgr_id = m.emp_id
+WHERE CONCAT(m.first_name, ' ', m.last_name) = 'Anjali Sharma';
+
+Q-3. Get all manager details 
+
+SELECT DISTINCT 
+    m.emp_id,
+    m.first_name,
+    m.last_name
+FROM 
+    employee m
+WHERE 
+    m.emp_id IN (SELECT DISTINCT e.mgr_id FROM employee e WHERE e.mgr_id IS NOT NULL);
+
+Q-4. Find any employee who hasn't assigned any manager 
+
+SELECT 
+    emp_id,
+    first_name,
+    last_name
+FROM 
+    employee
+WHERE 
+    mgr_id IS NULL;
+
+
+Q-5. Write a function to get a full name(first_name+last_name)
+
+DELIMITER $$
+
+CREATE FUNCTION get_full_name(first_name VARCHAR(50), last_name VARCHAR(50))
+RETURNS VARCHAR(100)
+DETERMINISTIC
+BEGIN
+    RETURN CONCAT(first_name, ' ', last_name);
+END$$
+
+DELIMITER ;
+
+
+SELECT 
+    emp_id,
+    get_full_name(first_name, last_name) AS full_name
+FROM 
+    employee;
+
+
+
+
+
+
+
